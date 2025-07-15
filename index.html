@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bidang Pemulihan Aset</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="login-page">
+        <div class="login-container">
+            <img src="https://pbs.twimg.com/profile_images/1186220840095866880/Dp0wAYra_400x400.jpg" alt="Logo Kejaksaan" class="logo">
+            <h2>BPA KEJATI PAPUA</h2>
+            <form id="login-form">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="username" placeholder="Nama Pengguna" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" placeholder="Kata Sandi" required>
+                </div>
+                <button type="submit" class="btn">Masuk</button>
+            </form>
+            <p class="register-text">Belum punya akun? <a href="#" id="register-link">Daftar Sekarang</a></p>
+        </div>
+    </div>
+
+    <div id="dashboard-page" style="display:none;">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <img src="https://pbs.twimg.com/profile_images/1186220840095866880/Dp0wAYra_400x400.jpg" alt="Logo Kejaksaan" class="logo">
+                <h3>Dashboard BPA Kejati Papua</h3>
+            </div>
+            <ul>
+                <li><a href="#" class="nav-link active" data-target="main-dashboard"><i class="fas fa-tachometer-alt"></i> Dasbor Utama</a></li>
+                <li><a href="#" class="nav-link" data-target="penelusuran-aset"><i class="fas fa-search-dollar"></i> Penelusuran Aset</a></li>
+                <li><a href="#" class="nav-link" data-target="perampasan-aset"><i class="fas fa-gavel"></i> Perampasan Aset</a></li>
+                <li><a href="#" class="nav-link" data-target="penyelesaian-aset"><i class="fas fa-check-circle"></i> Penyelesaian Aset</a></li>
+                <li><a href="#" class="nav-link" data-target="surat-masuk-keluar"><i class="fas fa-envelope"></i> Surat Masuk & Keluar</a></li>
+            </ul>
+            <div class="sidebar-footer">
+                 <a href="#" id="logout-btn-sidebar"><i class="fas fa-sign-out-alt"></i> Keluar</a>
+            </div>
+        </div>
+
+
+        <div class="main-content">
+            <div id="main-dashboard" class="content-section">
+                <div class="header">
+                    <div class="header-left">
+                        <h2>Dashboard Overview BPA Kejati Papua</h2>
+                        <p id="current-date"></p>
+                    </div>
+                    <div class="header-right">
+                        <div class="user-profile" id="user-profile-toggle">
+                            <i class="fas fa-user-circle"></i>
+                            <span>Admin</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="dropdown-menu" id="user-dropdown">
+                            <a href="#" id="settings-btn"><i class="fas fa-cog"></i> Seting</a>
+                            <a href="#" id="logout-btn-dropdown"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summary-cards">
+                    <div class="card">
+                        <div class="card-icon"><i class="fas fa-gavel"></i></div>
+                        <div class="card-info">
+                            <h4>Total Nilai Aset Diperoleh</h4>
+                            <p id="total-nilai-diperoleh">Rp 12.5 Miliar</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="card-info">
+                            <h4>Total Penyelesaian Aset</h4>
+                            <p id="total-penyelesaian">78 Kasus</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon"><i class="fas fa-search-dollar"></i></div>
+                        <div class="card-info">
+                            <h4>Total Aset Dilacak</h4>
+                            <p id="total-penelusuran">125 Aset</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon"><i class="fas fa-envelope-open-text"></i></div>
+                        <div class="card-info">
+                            <h4>Total Surat</h4>
+                            <p id="total-surat">45 Surat</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="charts-container">
+                    <div class="chart">
+                        <h3>Nilai Aset per Bulan (Miliar Rp)</h3>
+                        <canvas id="lineChart"></canvas>
+                    </div>
+                    <div class="chart">
+                        <h3>Jumlah Aset per Jenis</h3>
+                        <canvas id="barChart"></canvas>
+                    </div>
+                    <div class="chart">
+                        <h3>Tren Penelusuran Aset</h3>
+                        <canvas id="penelusuranTrendChart"></canvas>
+                    </div>
+                    <div class="chart">
+                        <h3>Tren Perampasan Aset</h3>
+                        <canvas id="perampasanTrendChart"></canvas>
+                    </div>
+                    <div class="chart">
+                        <h3>Tren Penyelesaian Aset</h3>
+                        <canvas id="penyelesaianTrendChart"></canvas>
+                    </div>
+                    <div class="chart">
+                        <h3>Tren Surat Masuk & Keluar</h3>
+                        <canvas id="suratTrendChart"></canvas>
+                    </div>
+                    </div>
+                <div class="map-container">
+                    <h3>Peta Sebaran Aset</h3>
+                    <div id="map"></div>
+                </div>
+            </div>
+
+            <div id="penelusuran-aset" class="content-section" style="display:none;">
+                <div class="header-table">
+                    <h2>Penelusuran Aset</h2>
+                </div>
+                <div class="table-controls">
+                    <button class="btn add-item-btn" data-modal="penelusuran-modal"><i class="fas fa-plus"></i> Tambah Item</button>
+                    <button class="btn"><i class="fas fa-download"></i> Unduh Excel</button>
+                    <button class="btn"><i class="fas fa-upload"></i> Unggah Excel</button>
+                    <input type="text" class="search-bar" placeholder="Cari penelusuran aset...">
+                    <select class="filter-dropdown">
+                        <option value="">Filter Jenis Aset</option>
+                        <option value="Tanah & Bangunan">Tanah & Bangunan</option>
+                        <option value="Kendaraan">Kendaraan</option>
+                        <option value="Rekening Bank">Rekening Bank</option>
+                    </select>
+                </div>
+                <div class="data-table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tanggal Penelusuran</th>
+                                <th>Jenis Aset</th>
+                                <th>Nilai Aset (Rp)</th>
+                                <th>Nama Perkara</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="perampasan-aset" class="content-section" style="display:none;">
+                 <div class="header-table">
+                    <h2>Perampasan Aset</h2>
+                </div>
+                <div class="table-controls">
+                    <button class="btn add-item-btn" data-modal="perampasan-modal"><i class="fas fa-plus"></i> Tambah Item</button>
+                    <button class="btn"><i class="fas fa-download"></i> Unduh Excel</button>
+                    <button class="btn"><i class="fas fa-upload"></i> Unggah Excel</button>
+                    <input type="text" class="search-bar" placeholder="Cari perampasan aset...">
+                    <select class="filter-dropdown">
+                        <option value="">Filter Status</option>
+                        <option value="Selesai">Selesai</option>
+                        <option value="Proses Lelang">Proses Lelang</option>
+                    </select>
+                </div>
+                <div class="data-table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tanggal Perampasan</th>
+                                <th>No. Putusan & Tgl Perkara</th>
+                                <th>Uraian Barang Bukti</th>
+                                <th>Nilai Wajar (Rp)</th>
+                                <th>Nilai Laku Terjual (Rp)</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="penyelesaian-aset" class="content-section" style="display:none;">
+                <div class="header-table">
+                    <h2>Penyelesaian Aset</h2>
+                </div>
+                <div class="table-controls">
+                    <button class="btn add-item-btn" data-modal="penyelesaian-modal"><i class="fas fa-plus"></i> Tambah Item</button>
+                    <button class="btn"><i class="fas fa-download"></i> Unduh Excel</button>
+                    <button class="btn"><i class="fas fa-upload"></i> Unggah Excel</button>
+                    <input type="text" class="search-bar" placeholder="Cari penyelesaian aset...">
+                    <select class="filter-dropdown">
+                        <option value="">Filter Hasil</option>
+                        <option value="Kembali ke Negara">Kembali ke Negara</option>
+                        <option value="Dikembalikan ke Korban">Dikembalikan ke Korban</option>
+                    </select>
+                </div>
+                <div class="data-table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tanggal Penyelesaian</th>
+                                <th>No. Putusan & Tgl Perkara</th>
+                                <th>Uraian Barang Bukti</th>
+                                <th>Nilai Wajar (Rp)</th>
+                                <th>Nilai Laku Terjual (Rp)</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="surat-masuk-keluar" class="content-section" style="display:none;">
+                <div class="header-table">
+                    <h2>Surat Masuk & Keluar</h2>
+                </div>
+                <div class="table-controls">
+                    <button class="btn add-item-btn" data-modal="surat-modal"><i class="fas fa-plus"></i> Tambah Item</button>
+                    <button class="btn"><i class="fas fa-download"></i> Unduh Excel</button>
+                    <button class="btn"><i class="fas fa-upload"></i> Unggah Excel</button>
+                    <input type="text" class="search-bar" placeholder="Cari surat...">
+                    <select class="filter-dropdown">
+                        <option value="">Filter Kategori</option>
+                        <option value="Surat Masuk">Surat Masuk</option>
+                        <option value="Surat Keluar">Surat Keluar</option>
+                    </select>
+                </div>
+                <div class="data-table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nomor Surat</th>
+                                <th>Perihal Surat</th>
+                                <th>Asal/Tujuan</th>
+                                <th>Kategori</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h3>Daftar Pengguna Baru</h3>
+            <form id="register-form">
+                <label for="reg-username">Nama Pengguna</label>
+                <input type="text" id="reg-username" required>
+                <label for="reg-password">Kata Sandi</label>
+                <input type="password" id="reg-password" required>
+                <label for="reg-confirm-password">Konfirmasi Kata Sandi</label>
+                <input type="password" id="reg-confirm-password" required>
+                <button type="submit" class="btn">Daftar</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="penelusuran-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h3>Tambah Data Penelusuran Aset</h3>
+            <form>
+                <label>Tanggal Penelusuran</label><input type="date">
+                <label>Jenis Aset</label>
+                <select>
+                    <option>Pilih Jenis</option>
+                    <optgroup label="Bergerak"><option>Kendaraan</option><option>Mesin</option></optgroup>
+                    <optgroup label="Tidak Bergerak"><option>Tanah & Bangunan</option></optgroup>
+                    <optgroup label="Keuangan & Investasi"><option>Saham</option><option>Rekening Bank</option></optgroup>
+                </select>
+                <label>Nilai Aset (Rp)</label><input type="number" placeholder="Contoh: 1500000000">
+                <label>Nama Perkara</label>
+                <select><option>Pilih</option><option>Pemilik Pribadi</option><option>Negara</option><option>BMN</option><option>Lainnya</option></select>
+                <label>Unggah Berkas</label><input type="file">
+                <button type="submit" class="btn">Simpan</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="perampasan-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h3>Tambah Data Perampasan Aset</h3>
+            <form>
+                 <label>Tanggal Perampasan</label><input type="date">
+                 <label>No. Putusan & Tgl Perkara</label><input type="text" placeholder="Contoh: 253 K/Pid.SUS/2012">
+                 <label>Uraian Barang Bukti</label><textarea rows="3"></textarea>
+                 <label>Nilai Wajar (Rp)</label><input type="number">
+                 <label>Nilai Laku Terjual (Rp)</label><input type="number">
+                 <label>Unggah Berkas</label><input type="file">
+                <button type="submit" class="btn">Simpan</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="penyelesaian-modal" class="modal">
+         <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h3>Tambah Data Penyelesaian Aset</h3>
+            <form>
+                 <label>Tanggal Penyelesaian</label><input type="date">
+                 <label>No. Putusan & Tgl Perkara</label><input type="text">
+                 <label>Uraian Barang Bukti</label><textarea rows="3"></textarea>
+                 <label>Nilai Wajar (Rp)</label><input type="number">
+                 <label>Nilai Laku Terjual (Rp)</label><input type="number">
+                 <label>Unggah Berkas</label><input type="file">
+                <button type="submit" class="btn">Simpan</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="surat-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h3>Tambah Data Surat</h3>
+            <form>
+                <label>Nomor Surat</label><input type="text">
+                <label>Perihal Surat</label><input type="text">
+                <label>Asal Surat</label><input type="text">
+                <label>Tujuan Surat</label><input type="text">
+                <label>Kategori Surat</label>
+                <select><option>Surat Masuk</option><option>Surat Keluar</option></select>
+                <label>Unggah Berkas</label><input type="file">
+                <button type="submit" class="btn">Simpan</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
